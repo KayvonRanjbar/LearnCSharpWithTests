@@ -41,5 +41,61 @@ namespace LearnCSharpWithTests
             IOrderedEnumerable<string> result = names.OrderBy(x => x.Length);
             result.Should().BeAssignableTo<IEnumerable<string>>();
         }
+
+        [Test]
+        public void LinqWhereMethodWithEmptyListDoesNotThrowException()
+        {
+            List<string> emptyList = new List<string>();
+            foreach (var item in emptyList.Where(i => i.ToLower() == "randomString"))
+            {
+            }
+        }
+
+        [Test]
+        public void ToLowerInvocationOnNullThrowsNullRefException()
+        {
+            string nullObject = null;
+            Action toLowerAction = new Action(() => nullObject.ToLower());
+            toLowerAction.Should().Throw<NullReferenceException>();
+        }
+
+        [Test]
+        public void ToLowerInvocationOnNullWithNullConditionalDoesNotThrowError()
+        {
+            string nullObject = null;
+            nullObject?.ToLower();
+        }
+
+        [Test]
+        public void ObjectsAreReferenceTypes()
+        {
+            var c1 = new Customer();
+            c1.FirstName = "Bilbo";
+
+            var c2 = c1;
+            c2.FirstName = "Frodo";
+
+            c1.FirstName.Should().Be("Frodo");
+        }
+
+        public class Customer
+        {
+            public string FirstName { get; set; }
+            public string LastName { get; set; }
+        }
+
+        [Test]
+        public void GetValueOrDefaultReturnsDefaultValueOfUnderlyingType()
+        {
+            // Arrange
+            DateTime? nullableDateTime = null;
+
+            // Act
+            DateTime actual = nullableDateTime.GetValueOrDefault();
+
+            // Assert
+            DateTime expected = default; // DateTime.MinValue
+            actual.Should().Be(expected);
+        }
     }
 }
